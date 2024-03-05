@@ -1,10 +1,11 @@
-*.local.*
+__pycache__
 *.ckpt
 *.safetensors
 *.pth
 /ESRGAN/*
 /SwinIR/*
 /repositories
+/venv
 /tmp
 /model.ckpt
 /models/**/*
