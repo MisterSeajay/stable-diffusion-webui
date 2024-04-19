@@ -6,6 +6,7 @@ import os
 import typing
 import shutil
 
+
 class PromptStyle(typing.NamedTuple):
     name: str
     prompt: str | None
@@ -44,13 +45,13 @@ def extract_style_text_from_prompt(style_text, prompt):
     if "{prompt}" in stripped_style_text:
         left, _, right = stripped_style_text.partition("{prompt}")
         if stripped_prompt.startswith(left) and stripped_prompt.endswith(right):
-            prompt = stripped_prompt[len(left):len(stripped_prompt)-len(right)]
+            prompt = stripped_prompt[len(left) : len(stripped_prompt) - len(right)]
             return True, prompt
     else:
         if stripped_prompt.endswith(stripped_style_text):
-            prompt = stripped_prompt[:len(stripped_prompt)-len(stripped_style_text)]
+            prompt = stripped_prompt[: len(stripped_prompt) - len(stripped_style_text)]
 
-            if prompt.endswith(', '):
+            if prompt.endswith(", "):
                 prompt = prompt[:-2]
 
             return True, prompt
@@ -67,11 +68,15 @@ def extract_original_prompts(style: PromptStyle, prompt, negative_prompt):
     if not style.prompt and not style.negative_prompt:
         return False, prompt, negative_prompt
 
-    match_positive, extracted_positive = extract_style_text_from_prompt(style.prompt, prompt)
+    match_positive, extracted_positive = extract_style_text_from_prompt(
+        style.prompt, prompt
+    )
     if not match_positive:
         return False, prompt, negative_prompt
 
-    match_negative, extracted_negative = extract_style_text_from_prompt(style.negative_prompt, negative_prompt)
+    match_negative, extracted_negative = extract_style_text_from_prompt(
+        style.negative_prompt, negative_prompt
+    )
     if not match_negative:
         return False, prompt, negative_prompt
 
@@ -95,7 +100,7 @@ def _expand_path(path: list[str | Path] | str | Path) -> list[str]:
     paths = []
     for pattern in path:
         folder, file = os.path.split(pattern)
-        if '*' in file or '?' in file:
+        if "*" in file or "?" in file:
             matching_files = Path(folder).glob(file)
             [paths.append(str(file)) for file in matching_files]
         else:
@@ -128,9 +133,7 @@ class StyleDatabase:
             _, filename = os.path.split(file)
             # Add a visible divider to the style list
             divider = _format_divider(filename)
-            self.styles[divider] = PromptStyle(
-                f"{divider}", None, None, "do_not_save"
-            )
+            self.styles[divider] = PromptStyle(f"{divider}", None, None, "do_not_save")
             # Add styles from this CSV file
             self.load_from_csv(file)
 
